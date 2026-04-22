@@ -1,0 +1,500 @@
+{
+  "info": {
+    "name": "Course Catalog API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000/api"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register (User)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@course.com\",\n  \"password\": \"admin123\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if(res.success && res.data.token) {",
+                  "  pm.collectionVariables.set('token', res.data.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/profile",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "profile"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users (Admin)",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["users"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "search", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/1",
+              "host": ["{{base_url}}"],
+              "path": ["users", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": ["{{base_url}}"],
+              "path": ["users"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New User\",\n  \"email\": \"newuser@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"USER\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/2",
+              "host": ["{{base_url}}"],
+              "path": ["users", "2"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\",\n  \"role\": \"ADMIN\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/3",
+              "host": ["{{base_url}}"],
+              "path": ["users", "3"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Topics",
+      "item": [
+        {
+          "name": "Get All Topics (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/topics",
+              "host": ["{{base_url}}"],
+              "path": ["topics"]
+            }
+          }
+        },
+        {
+          "name": "Get Topic By ID (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/topics/1",
+              "host": ["{{base_url}}"],
+              "path": ["topics", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Topic (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/topics",
+              "host": ["{{base_url}}"],
+              "path": ["topics"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Machine Learning\",\n  \"description\": \"Learn machine learning algorithms\",\n  \"parent_id\": 3\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Topic (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/topics/4",
+              "host": ["{{base_url}}"],
+              "path": ["topics", "4"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Deep Learning\",\n  \"description\": \"Learn deep learning and neural networks\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Topic (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/topics/4",
+              "host": ["{{base_url}}"],
+              "path": ["topics", "4"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Languages",
+      "item": [
+        {
+          "name": "Get All Languages (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/languages",
+              "host": ["{{base_url}}"],
+              "path": ["languages"]
+            }
+          }
+        },
+        {
+          "name": "Get Language By ID (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/languages/1",
+              "host": ["{{base_url}}"],
+              "path": ["languages", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Language (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/languages",
+              "host": ["{{base_url}}"],
+              "path": ["languages"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Korean\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Language (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/languages/4",
+              "host": ["{{base_url}}"],
+              "path": ["languages", "4"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Spanish\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Language (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/languages/4",
+              "host": ["{{base_url}}"],
+              "path": ["languages", "4"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Courses",
+      "item": [
+        {
+          "name": "Get All Courses (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/courses?page=1&limit=10&sort_by=created_at&sort_order=desc",
+              "host": ["{{base_url}}"],
+              "path": ["courses"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "search", "value": "" },
+                { "key": "topic_id", "value": "" },
+                { "key": "language_id", "value": "" },
+                { "key": "level", "value": "" },
+                { "key": "min_price", "value": "" },
+                { "key": "max_price", "value": "" },
+                { "key": "sort_by", "value": "created_at" },
+                { "key": "sort_order", "value": "desc" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Course By ID (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/courses/1",
+              "host": ["{{base_url}}"],
+              "path": ["courses", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Course (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/courses",
+              "host": ["{{base_url}}"],
+              "path": ["courses"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"topic_id\": 1,\n  \"language_id\": 1,\n  \"title\": \"Belajar JavaScript Modern\",\n  \"description\": \"Kursus lengkap JavaScript modern mencakup ES6+, async/await, modules, dan banyak lagi. Cocok untuk pemula yang ingin memulai karir di web development.\",\n  \"short_description\": \"JavaScript modern dari dasar\",\n  \"price\": 249000,\n  \"discount_rate\": 25,\n  \"thumbnail_url\": \"https://example.com/js-modern.jpg\",\n  \"level\": \"BEGINNER\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Course (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/courses/4",
+              "host": ["{{base_url}}"],
+              "path": ["courses", "4"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Belajar JavaScript Modern (Updated)\",\n  \"price\": 199000,\n  \"discount_rate\": 30\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Course (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/courses/4",
+              "host": ["{{base_url}}"],
+              "path": ["courses", "4"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

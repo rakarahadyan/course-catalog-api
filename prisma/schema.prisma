@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum users_role_enum {
+  USER
+  ADMIN
+}
+
+enum courses_level_enum {
+  ALL_LEVEL
+  BEGINNER
+  INTERMEDIATE
+  ADVANCE
+}
+
+model users {
+  id       Int              @id @default(autoincrement())
+  name     String           @db.VarChar(255)
+  email    String           @unique @db.VarChar(255)
+  password String           @db.VarChar(255)
+  role     users_role_enum  @default(USER)
+  courses  courses[]
+  
+  @@map("users")
+}
+
+model topics {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(255)
+  description String?
+  parent_id   Int?
+  parent      topics?  @relation("TopicHierarchy", fields: [parent_id], references: [id])
+  children    topics[] @relation("TopicHierarchy")
+  courses     courses[]
+  
+  @@map("topics")
+}
+
+model languages {
+  id       Int       @id @default(autoincrement())
+  name     String    @db.VarChar(255)
+  courses  courses[]
+  
+  @@map("languages")
+}
+
+model courses {
+  id               Int               @id @default(autoincrement())
+  topic_id         Int
+  language_id      Int
+  created_by_id    Int
+  title            String            @db.VarChar(255)
+  description      String
+  short_description String           @db.VarChar(255)
+  price            Decimal           @db.Decimal(18, 2)
+  discount_rate    Decimal           @db.Decimal(5, 2)
+  thumbnail_url    String            @db.VarChar(255)
+  level            courses_level_enum
+  created_at       DateTime          @default(now())
+  updated_at       DateTime          @updatedAt
+  
+  topic     topics    @relation(fields: [topic_id], references: [id])
+  language  languages @relation(fields: [language_id], references: [id])
+  createdBy users     @relation(fields: [created_by_id], references: [id])
+  
+  @@map("courses")
+}
